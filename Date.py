@@ -13,7 +13,7 @@ class Date(object):
 	
 	# called when Date is printed
 	def __str__(self):
-		return display()
+		return self.display()
 	
 	def __repr__(self):
-		return display()
+		return self.display()
