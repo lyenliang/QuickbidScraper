@@ -1,7 +1,8 @@
 # scrape target http://www.quickbid.com.tw/items/itemId/old
-from helpers import *
-import io
+from helpers.helpers import *
 from sys import argv
+from dataTypes.Date import Date
+from dataTypes.PageInfo import PageInfo
 
 def scrapeInfo(begin, end):
 	infoList = []
@@ -12,19 +13,23 @@ def scrapeInfo(begin, end):
 	return infoList
 
 def genReport(pageInfo):
-	with io.open('report.txt', 'w', encoding='utf8') as reportFile:
-		reportFile.write(u"  Date      Bid Price\tItem Price\n")
-		for i in pageInfo: 
-			# each bid point equals 25 NT dollars
-			reportFile.write(i['time'].display() + ': ' + `int(i['bidPrice'])*25` + '\t\t' + i['itemPrice'] + '\n')
-
+	assert type(pageInfo) == list
+	assert type(pageInfo[0]) == PageInfo
+	
+	infoByDay = groupByDay(pageInfo)
+	outputTextData(infoByDay)
+	plotGraph(infoByDay)
+	
 def usage():
 	return 'Please enter item ID for the program to scrape \n'\
 	       'e.g., \"python.exe quickbidScraper.py 10473 10471\"'
 
+def main(begin, end):
+	pageInfo = scrapeInfo(begin, end)
+	genReport(pageInfo)
+   
 if __name__ == '__main__':
 	if (len(argv) < 3):
 		print usage()
 		exit()
-	pageInfo = scrapeInfo(argv[1], argv[2])
-	genReport(pageInfo)
+	main(argv[1], argv[2])
