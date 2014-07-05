@@ -46,6 +46,19 @@ class TestQucikBidScraper(unittest.TestCase):
 		expected = Date('2014', '06', '27')
 		self.assertEqual(result, expected)
 	
+	def test_dateEqual(self):
+		result = self.date0 == self.date1
+		self.assertFalse(result)
+		
+	def test_dateComp(self):
+		d0 = Date('2013', '1', '1')
+		d1 = Date('2014', '9', '2')
+		result = d0 < d1
+		self.assertTrue(result)
+	
+	def test_pageInfoComp(self):
+		self.assertTrue(self.pageInfo2 > self.pageInfo1)
+	
 	def test_getBidPrice(self):
 		result = int(getBidPrice(self.soup))
 		expected = 71

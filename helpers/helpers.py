@@ -37,8 +37,9 @@ def getBidPrice(soup):
 	
 def getItemPrice(soup):
 	return soup.find("span", { "id" : "bid_item_price" }).text
-
+	
 def getPageInfo(itemId):
+	print "Scraping item " + `itemId` + "..."
 	targetUrl = getUrl(itemId)
 	data = requests.get(targetUrl).text # type(data) == 'unicode'
 	soup = BeautifulSoup(data)			# type(soup) == 'str'
@@ -49,14 +50,15 @@ def getPageInfo(itemId):
 	pageInfo = PageInfo(date, bidPrice, itemPrice)
 	return pageInfo
 
-def outputTextData(infoByDay):
-	with io.open('report.txt', 'w', encoding='utf8') as reportFile:
+def outputTextData(infoByDay, begin, end):
+	with io.open('report_' + begin + '_' + end + '.txt', 'w', encoding='utf8') as reportFile:
 		reportFile.write(u"  Date      Bid Price\tItem Price\n")
 		for i in infoByDay: 
 			# each bid point equals 25 NT dollars
 			reportFile.write(i.date.display() + ': ' + `int(i.bidPrice)*25` + '\t\t' + `i.itemPrice` + '\n')
 
 def groupByDay(pageInfo):
+	pageInfo.sort()
 	infoByDay = []
 	infoByDay.append(pageInfo[0])
 	i = 1
@@ -66,7 +68,7 @@ def groupByDay(pageInfo):
 		if (infoByDay[j].date == tmp.date):
 			infoByDay[j].bidPrice += int(tmp.bidPrice)
 			infoByDay[j].itemPrice += int(tmp.itemPrice)
-		else:
+		else: # next day's data
 			infoByDay.append(tmp)
 			j += 1
 		i += 1

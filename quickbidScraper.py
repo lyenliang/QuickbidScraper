@@ -3,21 +3,19 @@ from helpers.helpers import *
 from sys import argv
 from dataTypes.Date import Date
 from dataTypes.PageInfo import PageInfo
+from multiprocessing import Pool
 
 def scrapeInfo(begin, end):
-	infoList = []
-	for itemId in itemRange(int(begin), int(end)):
-		print "Scraping item " + `itemId` + "..."
-		info = getPageInfo(itemId)
-		infoList.append(info)
+	pool = Pool(processes=4)
+	infoList = pool.map(getPageInfo, itemRange(int(begin), int(end)))
 	return infoList
 
-def genReport(pageInfo):
+def genReport(pageInfo, begin, end):
 	assert type(pageInfo) == list
 	assert type(pageInfo[0]) == PageInfo
 	
 	infoByDay = groupByDay(pageInfo)
-	outputTextData(infoByDay)
+	outputTextData(infoByDay, begin, end)
 	plotGraph(infoByDay)
 	
 def usage():
@@ -26,7 +24,7 @@ def usage():
 
 def main(begin, end):
 	pageInfo = scrapeInfo(begin, end)
-	genReport(pageInfo)
+	genReport(pageInfo, begin, end)
    
 if __name__ == '__main__':
 	if (len(argv) < 3):

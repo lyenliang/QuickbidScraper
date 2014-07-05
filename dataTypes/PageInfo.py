@@ -1,7 +1,7 @@
 from Date import Date
 
 class PageInfo(object):
-	date = Date(0, 0, 0)
+	date = Date('0', '0', '0')
 	bidPrice = 0
 	itemPrice = 0
 	
@@ -15,3 +15,11 @@ class PageInfo(object):
 			return False
 		else:
 			return (self.date == other.date and self.bidPrice == other.bidPrice and self.itemPrice == other.itemPrice)
+	
+	def __cmp__(self, other):
+		if self.date > other.date:
+			return 1
+		elif self.date < other.date:
+			return -1
+		else:
+			return 0
