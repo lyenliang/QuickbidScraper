@@ -33,20 +33,23 @@ def getDate(soup):
 	return Date(year, month, day)
 
 def getBidPrice(soup):
-	return soup.find("span", { "id" : "bid_item_bid_price" }).text
+	return soup.find("span", { "id" : "bid_item_bid_price" }).text # some pages do not exist
 	
 def getItemPrice(soup):
-	return soup.find("span", { "id" : "bid_item_price" }).text
+	return soup.find("span", { "id" : "bid_item_price" }).text # some pages do not exist
 	
 def getPageInfo(itemId):
-	print "Scraping item " + `itemId` + "..."
+	print "ID " + `itemId`
 	targetUrl = getUrl(itemId)
 	data = requests.get(targetUrl).text # type(data) == 'unicode'
 	soup = BeautifulSoup(data)			# type(soup) == 'str'
-	
-	date = getDate(soup)
-	bidPrice = int(getBidPrice(soup))
-	itemPrice = int(getItemPrice(soup))
+	try:
+		date = getDate(soup)
+		bidPrice = int(getBidPrice(soup))
+		itemPrice = int(getItemPrice(soup))
+	except:
+		print 'ID: ' + `itemId` + ' doesn\'t exist' 
+		return None
 	pageInfo = PageInfo(date, bidPrice, itemPrice)
 	return pageInfo
 

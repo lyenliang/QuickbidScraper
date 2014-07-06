@@ -8,6 +8,7 @@ from multiprocessing import Pool
 def scrapeInfo(begin, end):
 	pool = Pool(processes=4)
 	infoList = pool.map(getPageInfo, itemRange(int(begin), int(end)))
+	infoList = [x for x in infoList if x is not None] # filter out none values
 	return infoList
 
 def genReport(pageInfo, begin, end):
