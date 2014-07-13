@@ -1,4 +1,5 @@
 # scrape target http://www.quickbid.com.tw/items/itemId/old
+import argparse
 from helpers.helpers import *
 from sys import argv
 from dataTypes.Date import Date
@@ -14,21 +15,21 @@ def scrapeInfo(begin, end):
 def genReport(pageInfo, begin, end):
 	assert type(pageInfo) == list
 	assert type(pageInfo[0]) == PageInfo
-	
+
 	infoByDay = groupByDay(pageInfo)
 	outputTextData(infoByDay, begin, end)
 	plotGraph(infoByDay)
-	
-def usage():
-	return 'Please enter item ID for the program to scrape \n'\
-	       'e.g., \"python.exe quickbidScraper.py 10473 10471\"'
 
 def main(begin, end):
 	pageInfo = scrapeInfo(begin, end)
 	genReport(pageInfo, begin, end)
-   
+
+def initArgs():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("beginId", type=int, help="the begin ID of the range of items you want to fetch")
+    parser.add_argument("endId", type=int, help="the end ID of the range of items you want to fetch")
+    return parser.parse_args()
+
 if __name__ == '__main__':
-	if (len(argv) < 3):
-		print usage()
-		exit()
-	main(argv[1], argv[2])
+    args = initArgs()
+    main(args.beginId, args.endId)

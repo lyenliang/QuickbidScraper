@@ -34,10 +34,10 @@ def getDate(soup):
 
 def getBidPrice(soup):
 	return soup.find("span", { "id" : "bid_item_bid_price" }).text # some pages do not exist
-	
+
 def getItemPrice(soup):
 	return soup.find("span", { "id" : "bid_item_price" }).text # some pages do not exist
-	
+
 def getPageInfo(itemId):
 	print "ID " + `itemId`
 	targetUrl = getUrl(itemId)
@@ -48,15 +48,15 @@ def getPageInfo(itemId):
 		bidPrice = int(getBidPrice(soup))
 		itemPrice = int(getItemPrice(soup))
 	except:
-		print 'ID: ' + `itemId` + ' doesn\'t exist' 
+		print 'ID: ' + `itemId` + ' doesn\'t exist'
 		return None
 	pageInfo = PageInfo(date, bidPrice, itemPrice)
 	return pageInfo
 
 def outputTextData(infoByDay, begin, end):
-	with io.open('report_' + begin + '_' + end + '.txt', 'w', encoding='utf8') as reportFile:
+	with io.open('report_' + `begin` + '_' + `end` + '.txt', 'w', encoding='utf8') as reportFile:
 		reportFile.write(u"  Date      Bid Price\tItem Price\n")
-		for i in infoByDay: 
+		for i in infoByDay:
 			# each bid point equals 25 NT dollars
 			reportFile.write(i.date.display() + ': ' + `int(i.bidPrice)*25` + '\t\t' + `i.itemPrice` + '\n')
 
@@ -76,7 +76,7 @@ def groupByDay(pageInfo):
 			j += 1
 		i += 1
 	return infoByDay
-			
+
 def plotGraph(infoByDay):
 	x = range(0, len(infoByDay))
 	yBid = []
@@ -84,9 +84,9 @@ def plotGraph(infoByDay):
 		yBid.append(i.bidPrice*25)
 	yItem = []
 	for i in infoByDay:
-		yItem.append(i.itemPrice)	
-	
-	
+		yItem.append(i.itemPrice)
+
+
 	fig, ax = plt.subplots()
 	ax.plot(x, yBid, 'k', label='Bid Price')
 	ax.plot(x, yItem, 'k:', label='Item Price')
@@ -97,4 +97,3 @@ def plotGraph(infoByDay):
 	grid(True)
 	savefig("BidVSItem.png")
 	plt.show()
-	
